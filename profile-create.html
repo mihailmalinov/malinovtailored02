@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Profile</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="profile-create.css">
+    <script type="module" src="profile-create.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Create New Business Profile</h1>
+        <button id="logout-button">Logout</button>  <!-- Logout button -->
+        <button id="home-button">Home</button>      <!-- Home button -->
+    </header>
+
+    <form id="profile-form">
+        <label for="name">Business Name:</label>
+        <input type="text" id="name" required><br>
+
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" required><br>
+
+        <label for="location">Location:</label>
+        <input type="text" id="location" required><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" required><br>
+
+        <label for="town">Town:</label>
+        <select id="town" required>
+            <option value="Skopje">Skopje</option>
+            <option value="Kocani">Kocani</option>
+            <option value="Stip">Stip</option>
+        </select><br>
+
+        <button type="submit">Add Business</button>
+    </form>
+</body>
+</html>

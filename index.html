@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+
+  <!-- Firebase SDK (v9+) Modular version) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDZziH8_jEztiuWTzJJnioLxdPRPGtJhAM",
+      authDomain: "web-175a0.firebaseapp.com",
+      databaseURL: "https://web-175a0-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "web-175a0",
+      storageBucket: "web-175a0.firebasestorage.app",
+      messagingSenderId: "1027545840213",
+      appId: "1:1027545840213:web:e36e5652690342df5df2dc"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // DOM Elements
+    const loginBtn = document.getElementById("loginBtn");
+    const emailField = document.getElementById("email");
+    const passwordField = document.getElementById("password");
+
+    // Handle login
+    loginBtn.addEventListener("click", function() {
+      const email = emailField.value;
+      const password = passwordField.value;
+
+      // Firebase login
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          alert("Welcome!");  // Show a pop-up on successful login
+          window.location.href = "home.html";  // Redirect to home page after login
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+
+          // Handle different types of errors
+          if (errorCode === 'auth/invalid-email') {
+            alert("Error: Invalid email format");
+          } else if (errorCode === 'auth/wrong-password') {
+            alert("Error: Incorrect password");
+          } else if (errorCode === 'auth/user-not-found') {
+            alert("Error: No user found with this email");
+          } else if (errorCode === 'auth/network-request-failed') {
+            alert("Error: Network connection issue. Please check your internet connection.");
+          } else {
+            alert("Error: " + errorMessage);  // Generic error message
+          }
+        });
+    });
+  </script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 300px;
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button id="loginBtn">Login</button>
+  </div>
+</body>
+</html>
