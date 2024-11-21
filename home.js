@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -15,29 +16,61 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const database = getDatabase(app);
 
-// Check if the user is logged in
+// Authentication state listener
 onAuthStateChanged(auth, (user) => {
-    const logoutBtn = document.getElementById("logoutBtn");
-    const loadingElement = document.getElementById("loading");
-
     if (!user) {
-        // If user is not logged in, redirect to login page
-        window.location.href = "index.html";
+        window.location.href = "index.html"; // Redirect if not logged in
     } else {
-        // User is logged in, show the content
-        loadingElement.style.display = "none";
         document.body.style.visibility = "visible";
-        logoutBtn.style.display = "block"; // Show logout button
+        loadVideos(); // Load videos when authenticated
     }
 });
 
-// Logout button functionality
+// Logout functionality
 const logoutBtn = document.getElementById("logoutBtn");
 logoutBtn.addEventListener("click", () => {
     signOut(auth).then(() => {
-        window.location.href = "index.html"; // Redirect to login page after logout
+        window.location.href = "index.html";
     }).catch((error) => {
         console.error("Error signing out: ", error);
     });
 });
+
+// Function to load videos
+function loadVideos() {
+    const videoList = document.getElementById("video-list");
+    const videosRef = ref(database, "videos");
+
+    onValue(videosRef, (snapshot) => {
+        videoList.innerHTML = ""; // Clear current videos
+        const videos = snapshot.val();
+
+        if (videos) {
+            Object.keys(videos).forEach((key) => {
+                const { videoId, videoNumber } = videos[key];
+
+                const videoItem = document.createElement("div");
+                videoItem.className = "video-item";
+
+                const label = document.createElement("p");
+                label.textContent = `Video #${videoNumber}`;
+                label.style.fontWeight = "bold";
+
+                const iframe = document.createElement("iframe");
+                iframe.src = `https://www.youtube.com/embed/${videoId}`;
+                iframe.frameBorder = "0";
+                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                iframe.allowFullscreen = true;
+
+                videoItem.appendChild(label);
+                videoItem.appendChild(iframe);
+                videoList.appendChild(videoItem);
+            });
+        } else {
+            videoList.innerHTML = "<p>No videos available at the moment.</p>";
+        }
+    });
+}
+ 
